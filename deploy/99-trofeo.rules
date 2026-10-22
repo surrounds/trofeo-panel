@@ -1,0 +1,7 @@
+# Доступ к панели Trofeo Vision 11.3 LCD без root
+# Установка: sudo cp 99-trofeo.rules /etc/udev/rules.d/
+#            sudo udevadm control --reload-rules && sudo udevadm trigger
+SUBSYSTEM=="usb", ATTR{idVendor}=="0416", ATTR{idProduct}=="5408", MODE="0666", TAG+="uaccess"
+# Запасные ID других ревизий прошивки
+SUBSYSTEM=="usb", ATTR{idVendor}=="0416", ATTR{idProduct}=="5302", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="0416", ATTR{idProduct}=="5304", MODE="0666", TAG+="uaccess"

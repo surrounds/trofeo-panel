@@ -1,0 +1,178 @@
+/* Тёмная тема в цветах самой панели */
+:root {
+  --bg: #0c0e16;
+  --panel: #181c28;
+  --border: #283246;
+  --fg: #dce6f0;
+  --dim: #8a92a0;
+  --accent: #50c8ff;
+  --good: #5adc82;
+  --warn: #ffb43c;
+  --crit: #ff5050;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+h1 { margin: 0; font-size: 22px; }
+
+.header-right { display: flex; align-items: center; gap: 14px; }
+select.lang { width: auto; padding: 5px 8px; font-size: 13px; }
+
+.status { font-size: 13px; color: var(--dim); }
+.status.ok { color: var(--good); }
+.status.off { color: var(--warn); }
+
+.preview {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  /* Пропорции панели 1920x440 */
+  aspect-ratio: 1920 / 440;
+}
+.preview img { display: block; width: 100%; height: 100%; }
+.preview-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--dim);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 800px) {
+  .slots { grid-template-columns: repeat(2, 1fr); }
+}
+
+.slot {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slot-head {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+select, input[type="text"], textarea {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 14px;
+  width: 100%;
+}
+select:focus, input[type="text"]:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+textarea {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+/* Вертикальная раскладка для textarea-настроек */
+.row.col {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Редактор списка городов мирового времени */
+.zonelist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.row-title { color: var(--dim); }
+button.mini {
+  background: var(--bg);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 400;
+  flex: none;
+}
+button.mini:hover { color: var(--fg); border-color: var(--accent); }
+button.mini.add { align-self: flex-start; color: var(--accent); }
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dim);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.row select, .row input[type="text"] { flex: 1; width: auto; }
+.row input[type="checkbox"] { accent-color: var(--accent); }
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  min-height: 42px;
+}
+
+.error { color: var(--crit); font-size: 13px; }
+
+button {
+  background: var(--accent);
+  color: #04121c;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled {
+  background: var(--panel);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  cursor: default;
+}

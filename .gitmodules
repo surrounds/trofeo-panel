@@ -1,0 +1,3 @@
+[submodule "trofeo-lcd"]
+	path = trofeo-lcd
+	url = https://github.com/surrounds/trofeo-lcd.git

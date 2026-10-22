@@ -1,0 +1,10 @@
+# Рантайм: конфиг и данные живут на каждой машине свои,
+# git pull их не трогает
+backend/data/
+backend/.venv/
+__pycache__/
+*.pyc
+frontend/node_modules/
+.DS_Store
+*.log
+.claude/
