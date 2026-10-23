@@ -54,7 +54,7 @@ def draw_cpu(img, d, x, y, w, h, theme, settings, m):
     d.text((x + PAD, y + 34), f"{cpu:.1f}%", font=F_HUGE,
            fill=color_for(theme, cpu))
 
-    sub = f"{len(per)} cores"
+    sub = f"{m.get('cores') or len(per)} cores"
     if settings.get("show_temp", True) and m["cpu_temp"] is not None:
         sub += f"   {m['cpu_temp']:.0f}°C"
     d.text((x + PAD, y + 132), sub, font=F_SM, fill=theme.dim)

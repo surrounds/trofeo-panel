@@ -63,7 +63,17 @@ def _render_png(cfg: AppConfig) -> bytes:
 # ── Статус и конфиг ───────────────────────────────────────────────
 @app.get("/api/status")
 def get_status():
-    return sender.status()
+    st = sender.status()
+    st["remote_metrics"] = metrics.remote_info()
+    return st
+
+
+@app.post("/api/metrics")
+def post_metrics(payload: dict):
+    """Метрики удалённой машины (Mac): показываются на панели, пока
+    приходят чаще TTL; затем демон возвращается к метрикам хоста."""
+    metrics.set_remote(payload)
+    return {"ok": True, "ttl_sec": metrics.REMOTE_TTL_SEC}
 
 
 @app.get("/api/config")

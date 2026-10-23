@@ -135,7 +135,9 @@ astimezone на вхождение). Веб-конфигуратор EN/UK с п
 ConfigStore пишет config.json.bak при каждом сохранении. Целевой
 хост панели - Raspberry Pi 4 1GB (64-bit RPi OS), «сервер»
 синхронизации = сама Pi (её HTTP API), flutter-приложение имеет
-Remote-режим поверх этого API.
+Remote-режим поверх этого API и шлёт метрики своего компьютера
+(POST /api/metrics, TTL 5с): панель у Pi показывает cpu/memory/disk/
+network Мака, при пропаже потока откатывается на метрики Pi.
 
 **Упаковка готова**: `./install.sh` (venv + зависимости + сборка
 фронта), `./run.sh` (запуск, env: PORT, PANEL_NO_USB=1),
