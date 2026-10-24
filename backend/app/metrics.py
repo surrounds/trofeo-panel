@@ -107,14 +107,39 @@ def _from_remote(r, disk_paths):
     }
 
 
-def snapshot(disk_paths=("/",)):
+def _no_data(r, disk_paths):
+    """Снимок-заглушка: поток от удалённого клиента пропал."""
+    return {
+        "no_data": True,
+        "host": str(r.get("host") or "?").upper(),
+        "uptime": 0.0,
+        "load": None,
+        "cpu": 0.0,
+        "cpu_per_core": [],
+        "cores": 0,
+        "cpu_temp": None,
+        "mem": _ns({}, ("percent", "used", "total")),
+        "swap": _ns({}, ("percent", "used", "total")),
+        "disks": {p: None for p in disk_paths},
+        "net": {"sent": 0.0, "recv": 0.0, "tot_s": 0, "tot_r": 0},
+    }
+
+
+def snapshot(disk_paths=("/",), fallback_sec=0):
     """Срез всех метрик для одного кадра.
 
     Если удалённый клиент (Mac) прислал метрики за последние
-    REMOTE_TTL_SEC - кадр показывает их, иначе метрики этой машины."""
+    REMOTE_TTL_SEC - кадр показывает их. Если поток пропал - кадр
+    показывает "No data" (виджеты не прыгают на метрики Pi). Метрики
+    этой машины показываются только пока клиент ни разу не подключался,
+    либо спустя fallback_sec секунд тишины (0 = никогда)."""
     r = _remote["data"]
-    if r is not None and time.time() - _remote["ts"] <= REMOTE_TTL_SEC:
-        return _from_remote(r, disk_paths)
+    if r is not None:
+        age = time.time() - _remote["ts"]
+        if age <= REMOTE_TTL_SEC:
+            return _from_remote(r, disk_paths)
+        if fallback_sec <= 0 or age < fallback_sec:
+            return _no_data(r, disk_paths)
     sent, recv, tot_s, tot_r = _net_rates()
     disks = {}
     for path in disk_paths:

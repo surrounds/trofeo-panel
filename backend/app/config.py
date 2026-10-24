@@ -59,6 +59,9 @@ class PanelConfig(BaseModel):
 
 class AppConfig(BaseModel):
     language: Literal["en", "uk"] = "en"
+    # Через сколько секунд без метрик от приложения показать метрики
+    # этой машины; 0 = никогда, показывать "No data"
+    metrics_fallback_sec: int = Field(default=0, ge=0)
     interval: float = Field(default=1.0, ge=0.2, le=2.0,
                             description="период обновления, сек; больше 2с "
                                         "нельзя из-за сторожевого таймера панели")

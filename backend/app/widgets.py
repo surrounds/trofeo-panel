@@ -48,7 +48,14 @@ def text_right(d, x_right, y, text, font, fill):
     d.text((x_right - d.textlength(text, font=font), y), text, font=font, fill=fill)
 
 
+def _draw_no_data(d, x, y, theme):
+    d.text((x + PAD, y + 34), tr("No data", "Немає даних"),
+           font=F_BIG, fill=theme.dim)
+
+
 def draw_cpu(img, d, x, y, w, h, theme, settings, m):
+    if m.get("no_data"):
+        return _draw_no_data(d, x, y, theme)
     cpu = m["cpu"]
     per = m["cpu_per_core"]
     d.text((x + PAD, y + 34), f"{cpu:.1f}%", font=F_HUGE,
@@ -76,6 +83,8 @@ def draw_cpu(img, d, x, y, w, h, theme, settings, m):
 
 
 def draw_memory(img, d, x, y, w, h, theme, settings, m):
+    if m.get("no_data"):
+        return _draw_no_data(d, x, y, theme)
     mem = m["mem"]
     d.text((x + PAD, y + 34), f"{mem.percent:.1f}%",
            font=F_HUGE, fill=color_for(theme, mem.percent))
@@ -96,6 +105,8 @@ def draw_memory(img, d, x, y, w, h, theme, settings, m):
 
 
 def draw_disk(img, d, x, y, w, h, theme, settings, m):
+    if m.get("no_data"):
+        return _draw_no_data(d, x, y, theme)
     path = settings.get("path", "/")
     disk = m["disks"].get(path)
     if disk is None:
@@ -113,6 +124,8 @@ def draw_disk(img, d, x, y, w, h, theme, settings, m):
 
 
 def draw_network(img, d, x, y, w, h, theme, settings, m):
+    if m.get("no_data"):
+        return _draw_no_data(d, x, y, theme)
     net = m["net"]
     d.text((x + PAD, y + 46), "↓", font=F_BIG, fill=theme.good)
     d.text((x + PAD + 44, y + 54), f"{fmt_bytes(net['recv'])}/s",

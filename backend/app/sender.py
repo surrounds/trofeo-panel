@@ -56,7 +56,8 @@ class Sender(threading.Thread):
 
     # ── Один цикл ─────────────────────────────────────────────────
     def _tick(self, cfg):
-        img = render_frame(cfg, metrics.snapshot(disk_paths(cfg)))
+        img = render_frame(cfg, metrics.snapshot(
+            disk_paths(cfg), cfg.metrics_fallback_sec))
         if not self.usb_enabled:
             return
         if self.panel is None:

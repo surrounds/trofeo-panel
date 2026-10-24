@@ -54,7 +54,8 @@ app.add_middleware(
 
 
 def _render_png(cfg: AppConfig) -> bytes:
-    img = render_frame(cfg, metrics.snapshot(disk_paths(cfg)))
+    img = render_frame(cfg, metrics.snapshot(
+        disk_paths(cfg), cfg.metrics_fallback_sec))
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return buf.getvalue()

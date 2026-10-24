@@ -29,7 +29,10 @@ def draw_header(d, theme, hcfg, m):
     if hcfg.show_host:
         d.text((x, y), m["host"], font=F_MED, fill=theme.accent)
         x += d.textlength(m["host"], font=F_MED) + 20
-    if hcfg.show_uptime:
+    if m.get("no_data"):
+        d.text((x, y + 10), l10n.tr("no data", "немає даних"),
+               font=F_SM, fill=theme.dim)
+    elif hcfg.show_uptime:
         d.text((x, y + 10), f"up {fmt_uptime(m['uptime'])}",
                font=F_SM, fill=theme.dim)
     if hcfg.show_load and m["load"] is not None:
