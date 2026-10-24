@@ -14,7 +14,7 @@ echo "== Зависимости"
 # Перезапуск: systemd-сервис, если установлен, иначе фоновый run.sh
 if systemctl list-unit-files trofeo-panel.service >/dev/null 2>&1 \
    && systemctl is-enabled trofeo-panel >/dev/null 2>&1; then
-    echo "== Перезапуск systemd-сервиса"
+    echo "== Перезапуск systemd-сервиса (нужен пароль sudo)"
     sudo systemctl restart trofeo-panel
     systemctl --no-pager -l status trofeo-panel | head -5
 else
