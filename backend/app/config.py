@@ -4,13 +4,16 @@
 ConfigStore потокобезопасен: его читают поток отправки и HTTP-обработчики.
 """
 import json
+import os
 import threading
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+# PANEL_DATA_DIR переопределяет каталог данных (тесты, второй экземпляр)
+DATA_DIR = Path(os.environ.get("PANEL_DATA_DIR")
+                or Path(__file__).resolve().parent.parent / "data")
 CONFIG_PATH = DATA_DIR / "config.json"
 IMAGES_DIR = DATA_DIR / "images"
 

@@ -68,6 +68,9 @@ python3 -m venv .venv            # если ещё нет
 SUBSYSTEM=="usb", ATTR{idVendor}=="0416", ATTR{idProduct}=="5408", MODE="0666"
 ```
 
+`PANEL_DATA_DIR=/путь` - отдельный каталог конфига/картинок (для тестов
+и второго экземпляра), по умолчанию backend/data.
+
 Dev-режим без панели (рендер и API работают, USB не трогается):
 
 ```bash
