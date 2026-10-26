@@ -7,14 +7,25 @@ import './App.css'
 const SLOTS = 4
 
 // Слот с выбранным "нет" в конфиг не попадает (панелей может быть 1..4)
+// offline - виджет слота на время, когда нет связи с приложением
 function slotsToPanels(slots) {
   return slots.filter((s) => s.type !== 'none')
-    .map((s) => ({ type: s.type, settings: s.settings }))
+    .map((s) => ({
+      type: s.type,
+      settings: s.settings,
+      offline: s.offline && s.offline.type !== 'none'
+        ? { type: s.offline.type, settings: s.offline.settings }
+        : null,
+    }))
 }
 
 function panelsToSlots(panels) {
-  const slots = panels.map((p) => ({ type: p.type, settings: p.settings || {} }))
-  while (slots.length < SLOTS) slots.push({ type: 'none', settings: {} })
+  const slots = panels.map((p) => ({
+    type: p.type,
+    settings: p.settings || {},
+    offline: p.offline ? { type: p.offline.type, settings: p.offline.settings || {} } : null,
+  }))
+  while (slots.length < SLOTS) slots.push({ type: 'none', settings: {}, offline: null })
   return slots.slice(0, SLOTS)
 }
 
@@ -214,14 +225,23 @@ export default function App() {
     setSlots((prev) => prev.map((s, j) => (j === i ? { ...s, ...patch } : s)))
   }
 
-  const changeType = (i, type) => {
-    // При смене типа настройки сбрасываются на дефолтные из каталога
+  // Дефолтные настройки виджета из каталога
+  const defaultsFor = (type) => {
     const meta = catalog.find((w) => w.type === type)
     const settings = {}
     for (const [k, m] of Object.entries(meta?.settings || {})) {
       if (m.default !== null && m.default !== undefined) settings[k] = m.default
     }
-    setSlot(i, { type, settings })
+    return settings
+  }
+
+  const changeType = (i, type) => {
+    // При смене типа настройки сбрасываются на дефолтные из каталога
+    setSlot(i, { type, settings: defaultsFor(type) })
+  }
+
+  const changeOffline = (i, type) => {
+    setSlot(i, { offline: type === 'none' ? null : { type, settings: defaultsFor(type) } })
   }
 
   const save = async (override = {}) => {
@@ -314,6 +334,31 @@ export default function App() {
                 onChange={(k, v) =>
                   setSlot(i, { settings: { ...slot.settings, [k]: v } })}
               />
+              {slot.type !== 'none' && (
+                <>
+                  <div className="slot-sub">{t('When disconnected', 'Без зв\u2019язку')}</div>
+                  <select
+                    value={slot.offline?.type ?? 'none'}
+                    onChange={(e) => changeOffline(i, e.target.value)}
+                  >
+                    <option value="none">{t('same widget (No data)', 'той самий (No data)')}</option>
+                    {catalog.map((w) => (
+                      <option key={w.type} value={w.type}>{widgetTitle(w)}</option>
+                    ))}
+                  </select>
+                  {slot.offline && (
+                    <WidgetSettings
+                      schema={catalog.find((w) => w.type === slot.offline.type)?.settings}
+                      settings={slot.offline.settings}
+                      images={images}
+                      lang={lang}
+                      onChange={(k, v) => setSlot(i, {
+                        offline: { ...slot.offline, settings: { ...slot.offline.settings, [k]: v } },
+                      })}
+                    />
+                  )}
+                </>
+              )}
             </div>
           )
         })}

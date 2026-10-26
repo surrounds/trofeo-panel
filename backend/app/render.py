@@ -68,7 +68,10 @@ def render_frame(cfg: AppConfig, m: dict) -> Image.Image:
     titles = {"cpu": "CPU", "memory": "MEMORY", "network": "NETWORK",
               "clock": "", "image": "", "calendar": "CALENDAR",
               "worldclock": "WORLD TIME", "weather": "WEATHER"}
-    for i, p in enumerate(cfg.panels):
+    online = bool(m.get("online"))
+    for i, slot in enumerate(cfg.panels):
+        # Без связи с приложением слот показывает свой offline-виджет
+        p = slot.offline if (not online and slot.offline is not None) else slot
         x = MARGIN + i * (panel_w + GAP)
         d.rounded_rectangle([x, panel_y, x + panel_w, panel_y + panel_h],
                             radius=14, fill=theme.panel,
@@ -83,6 +86,10 @@ def render_frame(cfg: AppConfig, m: dict) -> Image.Image:
 
 
 def disk_paths(cfg: AppConfig):
-    """Пути дисков, нужные метрикам для этого конфига."""
-    paths = [p.settings.get("path", "/") for p in cfg.panels if p.type == "disk"]
+    """Пути дисков, нужные метрикам для этого конфига (и offline-виджетов)."""
+    paths = []
+    for p in cfg.panels:
+        for w in (p, p.offline):
+            if w is not None and w.type == "disk":
+                paths.append(w.settings.get("path", "/"))
     return tuple(paths) or ("/",)

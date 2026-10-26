@@ -82,6 +82,16 @@ select.lang { width: auto; padding: 5px 8px; font-size: 13px; }
   gap: 10px;
 }
 
+.slot-sub {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
 .slot-head {
   font-size: 12px;
   text-transform: uppercase;

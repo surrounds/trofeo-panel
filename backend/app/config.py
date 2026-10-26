@@ -44,7 +44,9 @@ WidgetType = Literal["cpu", "memory", "disk", "network", "clock", "image",
 
 
 class PanelConfig(BaseModel):
-    """Одна панель на экране. settings зависят от типа виджета:
+    """Одна панель на экране. offline - виджет на то время, когда нет
+    связи с приложением (метрики от него не приходят); None = обычное
+    поведение (No data у системных виджетов). settings зависят от типа:
 
     cpu:     {"show_cores": bool, "show_temp": bool}
     memory:  {"show_swap": bool}
@@ -55,6 +57,10 @@ class PanelConfig(BaseModel):
     """
     type: WidgetType
     settings: dict = Field(default_factory=dict)
+    offline: "PanelConfig | None" = None
+
+
+PanelConfig.model_rebuild()
 
 
 class AppConfig(BaseModel):
@@ -81,10 +87,11 @@ class AppConfig(BaseModel):
     @classmethod
     def check_disk_paths(cls, panels):
         for p in panels:
-            if p.type == "disk":
-                path = p.settings.get("path", "/")
-                if not Path(path).exists():
-                    raise ValueError(f"disk: path does not exist: {path}")
+            for w in (p, p.offline):
+                if w is not None and w.type == "disk":
+                    path = w.settings.get("path", "/")
+                    if not Path(path).exists():
+                        raise ValueError(f"disk: path does not exist: {path}")
         return panels
 
 

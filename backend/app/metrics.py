@@ -89,6 +89,7 @@ def _from_remote(r, disk_paths):
     net = r.get("net") or {}
     per_core = list(r.get("cpu_per_core") or [])
     return {
+        "online": True,
         "host": str(r.get("host") or "?").upper(),
         "uptime": float(r.get("uptime") or 0),
         "load": tuple(load) if isinstance(load, (list, tuple))
@@ -110,6 +111,7 @@ def _from_remote(r, disk_paths):
 def _no_data(r, disk_paths):
     """Снимок-заглушка: поток от удалённого клиента пропал."""
     return {
+        "online": False,
         "no_data": True,
         "host": str(r.get("host") or "?").upper(),
         "uptime": 0.0,
@@ -153,6 +155,7 @@ def snapshot(disk_paths=("/",), fallback_sec=0):
         load = None
     per_core = psutil.cpu_percent(percpu=True, interval=None)
     return {
+        "online": False,
         "host": socket.gethostname().split(".")[0].upper(),
         "uptime": time.time() - psutil.boot_time(),
         "load": load,
